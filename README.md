@@ -1,5 +1,5 @@
 ## unity in openai
-<img src="assets/image.png" width="80%">
+<img src="git_assets/image.png" width="80%">
 openai app sdk 에 unity 의 3d 를 넣는 프로젝트입니다. 
 https://github.com/openai/openai-apps-sdk-examples
 자연어로 펭귄을 자유롭게 움직이고 싶습니다.
