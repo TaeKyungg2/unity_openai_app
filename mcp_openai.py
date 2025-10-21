@@ -13,7 +13,6 @@ from copy import deepcopy
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Dict, List
 
 import mcp.types as types
 from mcp.server.fastmcp import FastMCP
@@ -21,7 +20,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 
 @dataclass(frozen=True)
-class PizzazWidget:
+class Penguin:
     identifier: str
     title: str
     template_uri: str
@@ -50,8 +49,8 @@ def _load_widget_html(component_name: str) -> str:
     )
 
 
-widgets: List[PizzazWidget] = [
-    PizzazWidget(
+widgets: list[Penguin] = [
+    Penguin(
         identifier="pizza-map",
         title="Show Pizza Map",
         template_uri="ui://widget/pizza-map.html",
@@ -60,7 +59,7 @@ widgets: List[PizzazWidget] = [
         html=_load_widget_html("pizzaz"),
         response_text="Rendered a pizza map!",
     ),
-    PizzazWidget(
+    Penguin(
         identifier="pizza-carousel",
         title="Show Pizza Carousel",
         template_uri="ui://widget/pizza-carousel.html",
@@ -69,7 +68,7 @@ widgets: List[PizzazWidget] = [
         html=_load_widget_html("pizzaz-carousel"),
         response_text="Rendered a pizza carousel!",
     ),
-    PizzazWidget(
+    Penguin(
         identifier="pizza-albums",
         title="Show Pizza Album",
         template_uri="ui://widget/pizza-albums.html",
@@ -78,7 +77,7 @@ widgets: List[PizzazWidget] = [
         html=_load_widget_html("pizzaz-albums"),
         response_text="Rendered a pizza album!",
     ),
-    PizzazWidget(
+    Penguin(
         identifier="pizza-list",
         title="Show Pizza List",
         template_uri="ui://widget/pizza-list.html",
@@ -93,8 +92,8 @@ widgets: List[PizzazWidget] = [
 MIME_TYPE = "text/html+skybridge"
 
 
-WIDGETS_BY_ID: Dict[str, PizzazWidget] = {widget.identifier: widget for widget in widgets}
-WIDGETS_BY_URI: Dict[str, PizzazWidget] = {widget.template_uri: widget for widget in widgets}
+WIDGETS_BY_ID: dict[str, Penguin] = {widget.identifier: widget for widget in widgets}
+WIDGETS_BY_URI: dict[str, Penguin] = {widget.template_uri: widget for widget in widgets}
 
 
 class PizzaInput(BaseModel):
@@ -115,7 +114,7 @@ mcp = FastMCP(
 )
 
 
-TOOL_INPUT_SCHEMA: Dict[str, Any] = {
+TOOL_INPUT_SCHEMA: dict = {
     "type": "object",
     "properties": {
         "pizzaTopping": {
@@ -128,11 +127,11 @@ TOOL_INPUT_SCHEMA: Dict[str, Any] = {
 }
 
 
-def _resource_description(widget: PizzazWidget) -> str:
+def _resource_description(widget: Penguin) -> str:
     return f"{widget.title} widget markup"
 
 
-def _tool_meta(widget: PizzazWidget) -> Dict[str, Any]:
+def _tool_meta(widget: Penguin) -> dict:
     return {
         "openai/outputTemplate": widget.template_uri,
         "openai/toolInvocation/invoking": widget.invoking,
@@ -142,7 +141,7 @@ def _tool_meta(widget: PizzazWidget) -> Dict[str, Any]:
     }
 
 
-def _embedded_widget_resource(widget: PizzazWidget) -> types.EmbeddedResource:
+def _embedded_widget_resource(widget: Penguin) -> types.EmbeddedResource:
     return types.EmbeddedResource(
         type="resource",
         resource=types.TextResourceContents(
@@ -155,7 +154,7 @@ def _embedded_widget_resource(widget: PizzazWidget) -> types.EmbeddedResource:
 
 
 @mcp._mcp_server.list_tools()
-async def _list_tools() -> List[types.Tool]:
+async def _list_tools() -> list[types.Tool]:
     return [
         types.Tool(
             name=widget.identifier,
@@ -175,7 +174,7 @@ async def _list_tools() -> List[types.Tool]:
 
 
 @mcp._mcp_server.list_resources()
-async def _list_resources() -> List[types.Resource]:
+async def _list_resources() -> list[types.Resource]:
     return [
         types.Resource(
             name=widget.title,
@@ -190,7 +189,7 @@ async def _list_resources() -> List[types.Resource]:
 
 
 @mcp._mcp_server.list_resource_templates()
-async def _list_resource_templates() -> List[types.ResourceTemplate]:
+async def _list_resource_templates() -> list[types.ResourceTemplate]:
     return [
         types.ResourceTemplate(
             name=widget.title,
@@ -259,7 +258,7 @@ async def _call_tool_request(req: types.CallToolRequest) -> types.ServerResult:
 
     topping = payload.pizza_topping
     widget_resource = _embedded_widget_resource(widget)
-    meta: Dict[str, Any] = {
+    meta: dict[str, object] = {
         "openai.com/widget": widget_resource.model_dump(mode="json"),
         "openai/outputTemplate": widget.template_uri,
         "openai/toolInvocation/invoking": widget.invoking,
