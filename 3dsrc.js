@@ -16,19 +16,15 @@ const keys = {
 
 document.addEventListener('keydown', (e) => {
   switch (e.code) {
-    case 'KeyW':
     case 'ArrowUp':
       keys.forward = true;
       break;
-    case 'KeyS':
     case 'ArrowDown':
       keys.backward = true;
       break;
-    case 'KeyA':
     case 'ArrowLeft':
       keys.left = true;
       break;
-    case 'KeyD':
     case 'ArrowRight':
       keys.right = true;
       break;
@@ -37,24 +33,21 @@ document.addEventListener('keydown', (e) => {
 
 document.addEventListener('keyup', (e) => {
   switch (e.code) {
-    case 'KeyW':
     case 'ArrowUp':
       keys.forward = false;
       break;
-    case 'KeyS':
     case 'ArrowDown':
       keys.backward = false;
       break;
-    case 'KeyA':
     case 'ArrowLeft':
       keys.left = false;
       break;
-    case 'KeyD':
     case 'ArrowRight':
       keys.right = false;
       break;
   }
 });
+
 camera.position.set(0, 1.5, 3);
 const scene = new THREE.Scene();
 // 렌더러 (화면에 그림 그리는 역할)
@@ -90,7 +83,7 @@ scene.add(plane);
 let model;
 let penguin;
 const moveSpeed = 0.05; // 이동 속도 (적절히 조절)
-loader.load('pin.glb', function(gltf) {
+loader.load('3d_assets/pin.glb', function(gltf) {
     model = gltf.scene;
     scene.add(model);
     
